@@ -320,3 +320,17 @@ class Members_specie(db.Model):
     
     def serialize(self):
         return self.people.serialize_simple()
+
+class Specie_filmography(db.Model):
+    __tablename__="specie_filmography"
+    id = db.Column(db.Integer, primary_key=True)
+    specie_id = db.Column(db.Integer(),db.ForeignKey("specie.id"))
+    specie = db.relationship(Specie)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
+    film = db.relationship(Film,backref="specie_filmography",lazy=True)
+
+    def __repr__(self):
+        return '<Film %r>' % self.film.title
+    
+    def serialize(self):
+        return self.film.serialize()
