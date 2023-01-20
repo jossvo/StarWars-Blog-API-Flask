@@ -41,9 +41,6 @@ def create_starship():
 
     db.session.add(new_starship)
     db.session.commit()
-    # new_starship = Starship.query.get(1)
-    # class_keys = list(vars(new_starship).keys())
-    # print(class_keys)
 
     return "ok",201
 

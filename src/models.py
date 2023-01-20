@@ -275,7 +275,19 @@ class Vehicle(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "model" : self.model,
+            "vehicle_class" : self.vehicle_class,
+            "manufacturer" : self.manufacturer,
+            "length" : self.length,
+            "cost_in_credits" : self.cost_in_credits,
+            "crew" : self.crew,
+            "passengers" : self.passengers,
+            "max_atmosphering_speed" : self.max_atmosphering_speed,
+            "cargo_capacity" : self.cargo_capacity,
+            "url" : self.url,
+            "created" : self.created,
+            "edited" : self.edited
         }
     def serialize_simple(self):
         return {
