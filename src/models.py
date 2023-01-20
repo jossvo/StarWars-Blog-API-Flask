@@ -33,7 +33,7 @@ class Planet(db.Model):
     surface_water = db.Column(db.Integer())
     # residents = done by Table "Residents"
     # films array = done by Table "Location"
-    # url string = db.Column(db.String(120),nullable=False)
+    url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)
     created_by_id=db.Column(db.Integer,db.ForeignKey("user.id"))
@@ -74,7 +74,7 @@ class Specie(db.Model):
     homeworld_by_id = db.Column(db.Integer(),db.ForeignKey("planet.id"))
     homeworld = db.relationship(Planet)
     # people array = done by table "Members_specie"
-    # films array = 
+    # films array = done by table "specie_filmography"
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)
@@ -85,14 +85,26 @@ class Specie(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "classification" : self.classification,
+            "designation" : self.designation,
+            "average_height" : self.average_height,
+            "average_lifespan" : self.average_lifespan,
+            "eye_colors" : self.eye_colors,
+            "hair_colors" : self.hair_colors,
+            "skin_colors" : self.skin_colors,
+            "language" : self.language,
+            "homeworld" : self.homeworld.name,
+            "url" : self.url,
+            "created" : self.created,
+            "edited" : self.edited
         }
 
 class People(db.Model):
     __tablename__="people"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120),nullable=False)
-    birth_year = db.Column(db.Date(),nullable=False)
+    birth_year = db.Column(db.String(120),nullable=False)
     eye_color = db.Column(db.String(120),nullable=False)
     gender = db.Column(db.String(120),nullable=False)
     hair_color = db.Column(db.String(120),nullable=False)
@@ -125,8 +137,8 @@ class People(db.Model):
             "height" : self.height,
             "mass" : self.mass,
             "skin_color" : self.skin_color,
-            "homeworld_by_id" : self.homeworld_by_id,
-            "specie_id" : self.specie_id,
+            "homeworld" : self.homeworld.name,
+            "specie" : self.specie.name,
             "url" : self.url,
             "created" : self.created,
             "edited" : self.edited
@@ -143,15 +155,15 @@ class Film(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120),nullable=False)
     episode_id = db.Column(db.Integer())
-    opening_crawl = db.Column(db.String(120),nullable=False)
+    opening_crawl = db.Column(db.String(600),nullable=False)
     director = db.Column(db.String(120),nullable=False)
     producer = db.Column(db.String(120),nullable=False)
-    release_date = db.Column(db.DateTime(),nullable=False)
-    # species array = 
+    release_date = db.Column(db.Date(),nullable=False)
+    # species array = do by table "Specie_filmography"
     # starships array = 
     # vehicles array = 
-    # characters array = 
-    # planets array = 
+    # characters array = do by table "Filmography"
+    # planets array = do by table "Location"
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)

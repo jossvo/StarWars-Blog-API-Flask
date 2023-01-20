@@ -42,9 +42,6 @@ def create_person():
 
     db.session.add(new_person)
     db.session.commit()
-    # new_person = People.query.get(1)
-    # class_keys = list(vars(new_person).keys())
-    # print(class_keys)
 
     return "ok",201
 

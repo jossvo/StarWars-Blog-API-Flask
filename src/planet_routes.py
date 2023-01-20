@@ -28,7 +28,7 @@ def get_single_planet(planet_id):
 
 @api_planets.route('/planets', methods=['POST'])
 def create_planet():
-    class_keys = ['name', 'diameter', 'orbital_period', 'population', 'terrain', 'created_by_id', 'rotation_period', 'gravity', 'climate', 'surface_water']
+    class_keys = ['name', 'diameter', 'orbital_period', 'population', 'terrain', 'created_by_id', 'rotation_period', 'gravity', 'climate', 'surface_water','url']
 
     new_planet = Planet()
     for key in class_keys:
