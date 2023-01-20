@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, request, jsonify
 from models import db, User, Planet, People, Location, Film, Resident, Filmography, Reg_starship, Reg_vehicles
+from datetime import datetime
 
 api_people = Blueprint('apiPeople', __name__)
 
@@ -31,12 +32,43 @@ def get_single_person(people_id):
 
 @api_people.route('/people', methods=['POST'])
 def create_person():
-    name=request.json.get("name")
-    gravity=request.json.get("gravity")
-    created_by_id = request.json.get("created_by")
+    class_keys = [ 'height', 'name', 'mass', 'skin_color', 'birth_year', 'homeworld_by_id', 'eye_color', 'specie_id', 'gender', 'url', 'hair_color']
 
-    new_planet = Planet(name=name,gravity=gravity,created_by_id=created_by_id)
-    db.session.add(new_planet)
+    new_person=People()
+    for key in class_keys:
+        setattr(new_person,key,request.json.get(key))
+    setattr(new_person,'edited',datetime.now())
+    setattr(new_person,'created',datetime.now())
+
+    db.session.add(new_person)
     db.session.commit()
+    # new_person = People.query.get(1)
+    # class_keys = list(vars(new_person).keys())
+    # print(class_keys)
 
     return "ok",201
+
+@api_people.route('/people/<person_id>', methods=['PATCH'])
+def update_person(person_id):
+    person=People.query.get(person_id)
+    if person is None:
+        return jsonify({"msg":"Persona no encontrada"}), 404
+    class_keys=[ 'height', 'name', 'mass', 'skin_color', 'birth_year', 'homeworld_by_id', 'eye_color', 'specie_id', 'gender', 'url', 'hair_color']
+    
+    for key in class_keys:
+        if request.json.get(key) is not None :
+            setattr(person,key,request.json.get(key))
+    
+    setattr(person,'edited',datetime.now())
+    db.session.add(person)
+    db.session.commit()
+    return jsonify(person.serialize()),200
+
+@api_people.route('/people/<person_id>',methods=['DELETE'])
+def delete_single_person(person_id):
+    person = People.query.get(person_id)
+    if person is None:
+        return jsonify({"msg":"Persona no encontrada"}), 404
+    db.session.delete(person)
+    db.session.commit()
+    return jsonify({"msg":"Persona eliminada"}), 200

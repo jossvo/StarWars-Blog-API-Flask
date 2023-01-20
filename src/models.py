@@ -73,7 +73,7 @@ class Specie(db.Model):
     language = db.Column(db.String(120),nullable=False)
     homeworld_by_id = db.Column(db.Integer(),db.ForeignKey("planet.id"))
     homeworld = db.relationship(Planet)
-    # people array = 
+    # people array = done by table "Members_specie"
     # films array = 
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
@@ -117,8 +117,19 @@ class People(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "homeworld": self.homeworld.name
+            "name" : self.name,
+            "birth_year" : self.birth_year,
+            "eye_color" : self.eye_color,
+            "gender" : self.gender,
+            "hair_color" : self.hair_color,
+            "height" : self.height,
+            "mass" : self.mass,
+            "skin_color" : self.skin_color,
+            "homeworld_by_id" : self.homeworld_by_id,
+            "specie_id" : self.specie_id,
+            "url" : self.url,
+            "created" : self.created,
+            "edited" : self.edited
         }
     
     def serialize_simple(self):

@@ -28,11 +28,14 @@ def get_single_planet(planet_id):
 
 @api_planets.route('/planets', methods=['POST'])
 def create_planet():
-    name=request.json.get("name")
-    gravity=request.json.get("gravity")
-    created_by_id = request.json.get("created_by")
+    class_keys = ['name', 'diameter', 'orbital_period', 'population', 'terrain', 'created_by_id', 'rotation_period', 'gravity', 'climate', 'surface_water']
 
-    new_planet = Planet(name=name,gravity=gravity,created_by_id=created_by_id)
+    new_planet = Planet()
+    for key in class_keys:
+        setattr(new_planet,key,request.json.get(key))
+    setattr(new_planet,'edited',datetime.now())
+    setattr(new_planet,'created',datetime.now())
+
     db.session.add(new_planet)
     db.session.commit()
 
@@ -43,11 +46,7 @@ def update_planet(planet_id):
     planet=Planet.query.get(planet_id)
     if planet is None:
         return jsonify({"msg":"Planeta no encontrado"}), 404
-    class_keys =list(vars(planet).keys())
-    class_keys.remove('_sa_instance_state')
-    class_keys.remove('created')
-    class_keys.remove('edited')
-    class_keys.remove('created_by_id')
+    class_keys=['name', 'diameter', 'orbital_period', 'population', 'terrain', 'created_by_id', 'rotation_period', 'gravity', 'climate', 'surface_water']
     
     for key in class_keys:
         if request.json.get(key) is not None :
