@@ -62,7 +62,7 @@ def update_specie(specie_id):
     return jsonify(specie.serialize()),200
 
 @api_specie.route('/specie/<specie_id>',methods=['DELETE'])
-def delete_single_person(specie_id):
+def delete_single_specie(specie_id):
     specie = Specie.query.get(specie_id)
     if specie is None:
         return jsonify({"msg":"Especie no encontrada"}), 404

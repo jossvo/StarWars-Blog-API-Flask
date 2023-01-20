@@ -160,8 +160,8 @@ class Film(db.Model):
     producer = db.Column(db.String(120),nullable=False)
     release_date = db.Column(db.Date(),nullable=False)
     # species array = do by table "Specie_filmography"
-    # starships array = 
-    # vehicles array = 
+    # starships array = do by table "Featuring_starship"
+    # vehicles array = do by table "Featuring_vehicle"
     # characters array = do by table "Filmography"
     # planets array = do by table "Location"
     url = db.Column(db.String(120),nullable=False)
@@ -346,3 +346,17 @@ class Specie_filmography(db.Model):
     
     def serialize(self):
         return self.film.serialize()
+
+class Featuring_starship(db.Model):
+    __tablename__="featuring_starship"
+    id = db.Column(db.Integer, primary_key=True)
+    starship_id = db.Column(db.Integer(),db.ForeignKey("starship.id"))
+    starship = db.relationship(Starship)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
+    film = db.relationship(Film,backref="featuring_starship",lazy=True)
+
+    def __repr__(self):
+        return '<Film %r>' % self.film.title
+    
+    def serialize(self):
+        return self.starship.serialize()
