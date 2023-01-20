@@ -13,6 +13,7 @@ from planet_routes import api_planets
 from people_routes import api_people
 from specie_routes import api_specie
 from film_routes import api_films
+from starship_routes import api_starship
 #from models import Person
 
 app = Flask(__name__)
@@ -21,6 +22,7 @@ app.register_blueprint(api_planets,url_prefix="/")
 app.register_blueprint(api_people,url_prefix="/")
 app.register_blueprint(api_specie,url_prefix="/")
 app.register_blueprint(api_films,url_prefix="/")
+app.register_blueprint(api_starship,url_prefix="/")
 
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:

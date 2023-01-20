@@ -48,9 +48,6 @@ def create_film():
 
     db.session.add(new_film)
     db.session.commit()
-    # new_film = Film.query.get(1)
-    # class_keys = list(vars(new_film).keys())
-    # print(class_keys)
 
     return "ok",201
 

@@ -170,8 +170,8 @@ class Film(db.Model):
     producer = db.Column(db.String(120),nullable=False)
     release_date = db.Column(db.Date(),nullable=False)
     # species array = done by table "Specie_filmography"
-    # starships array = do by table "Featuring_starship"
-    # vehicles array = do by table "Featuring_vehicle"
+    # starships array = done by table "Featuring_starship"
+    # vehicles array = done by table "Featuring_vehicle"
     # characters array = done by table "Filmography"
     # planets array = done by table "Location"
     url = db.Column(db.String(120),nullable=False)
@@ -208,16 +208,16 @@ class Starship(db.Model):
     model = db.Column(db.String(120),nullable=False)
     starship_class = db.Column(db.String(120),nullable=False)
     manufacturer = db.Column(db.String(120),nullable=False)
-    cost_in_credits = db.Column(db.Integer())
+    cost_in_credits = db.Column(db.BigInteger())
     length = db.Column(db.Integer()) #float
     crew = db.Column(db.String(120),nullable=False)
     passengers = db.Column(db.Integer())
     max_atmosphering_speed = db.Column(db.Integer())
     hyperdrive_rating = db.Column(db.String(120),nullable=False)
     mglt = db.Column(db.Integer())
-    cargo_capacity = db.Column(db.Integer())
-    # films array = 
-    # pilots array = 
+    cargo_capacity = db.Column(db.BigInteger())
+    # films array = done by table "Featuring_starship"
+    # pilots array = done by table "Reg_starship"
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)
@@ -229,7 +229,20 @@ class Starship(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "model" : self.model,
+            "starship_class" : self.starship_class,
+            "manufacturer" : self.manufacturer,
+            "cost_in_credits" : self.cost_in_credits,
+            "length" : self.length,
+            "crew" : self.crew,
+            "passengers" : self.passengers,
+            "max_atmosphering_speed" : self.max_atmosphering_speed,
+            "hyperdrive_rating" : self.hyperdrive_rating,
+            "mglt" : self.mglt,
+            "url" : self.url,
+            "created" : self.created,
+            "edited" : self.edited,
         }
     def serialize_simple(self):
         return {
@@ -245,11 +258,11 @@ class Vehicle(db.Model):
     vehicle_class = db.Column(db.String(120),nullable=False)
     manufacturer = db.Column(db.String(120),nullable=False)
     length = db.Column(db.Integer())
-    cost_in_credits = db.Column(db.Integer())
+    cost_in_credits = db.Column(db.BigInteger())
     crew = db.Column(db.String(120),nullable=False)
     passengers = db.Column(db.Integer())
     max_atmosphering_speed = db.Column(db.Integer())
-    cargo_capacity = db.Column(db.Integer())
+    cargo_capacity = db.Column(db.BigInteger())
     # films array = 
     # pilots array = 
     url = db.Column(db.String(120),nullable=False)
@@ -342,6 +355,8 @@ class Reg_starship(db.Model):
     
     def serialize(self):
         return self.starship.serialize_simple()
+    def serialize_pilot(self):
+        return self.people.serialize_simple()
 
 class Reg_vehicles(db.Model):
     __tablename__="reg_vehicle"
@@ -356,6 +371,8 @@ class Reg_vehicles(db.Model):
     
     def serialize(self):
         return self.vehicle.serialize_simple()
+    def serialize_pilot(self):
+        return self.people.serialize_simple()
 
 class Members_specie(db.Model):
     __tablename__="members_specie"
@@ -400,6 +417,8 @@ class Featuring_starship(db.Model):
     
     def serialize_starship(self):
         return self.starship.serialize_simple()
+    def serialize_film(self):
+        return self.film.serialize_simple()
 
 class Featuring_vehicle(db.Model):
     __tablename__="featuring_vehicle"
@@ -414,3 +433,5 @@ class Featuring_vehicle(db.Model):
     
     def serialize_vehicle(self):
         return self.vehicle.serialize_simple()
+    def serialize_film(self):
+        return self.film.serialize_simple()
