@@ -39,9 +39,6 @@ def create_specie():
 
     db.session.add(new_specie)
     db.session.commit()
-    # new_specie = Specie.query.get(1)
-    # class_keys = list(vars(new_specie).keys())
-    # print(class_keys)
 
     return "ok",201
 

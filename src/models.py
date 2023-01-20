@@ -58,6 +58,11 @@ class Planet(db.Model):
             "created": self.created,
             "edited": self.edited
         }
+    def serialize_simple(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+        }
 
 class Specie(db.Model):
     __tablename__="specie"
@@ -65,8 +70,8 @@ class Specie(db.Model):
     name = db.Column(db.String(120),nullable=False)
     classification = db.Column(db.String(120),nullable=False)
     designation = db.Column(db.String(120),nullable=False)
-    average_height = db.Column(db.Integer())
-    average_lifespan = db.Column(db.Integer())
+    average_height = db.Column(db.String(120),nullable=False)
+    average_lifespan = db.Column(db.String(120),nullable=False)
     eye_colors = db.Column(db.String(120),nullable=False)
     hair_colors = db.Column(db.String(120),nullable=False)
     skin_colors = db.Column(db.String(120),nullable=False)
@@ -98,6 +103,11 @@ class Specie(db.Model):
             "url" : self.url,
             "created" : self.created,
             "edited" : self.edited
+        }
+    def serialize_simple(self):
+        return {
+            "id": self.id,
+            "name": self.name,
         }
 
 class People(db.Model):
@@ -159,11 +169,11 @@ class Film(db.Model):
     director = db.Column(db.String(120),nullable=False)
     producer = db.Column(db.String(120),nullable=False)
     release_date = db.Column(db.Date(),nullable=False)
-    # species array = do by table "Specie_filmography"
+    # species array = done by table "Specie_filmography"
     # starships array = do by table "Featuring_starship"
     # vehicles array = do by table "Featuring_vehicle"
-    # characters array = do by table "Filmography"
-    # planets array = do by table "Location"
+    # characters array = done by table "Filmography"
+    # planets array = done by table "Location"
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)
@@ -173,6 +183,19 @@ class Film(db.Model):
         return '<Film %r>' % self.title
     
     def serialize(self):
+        return {
+            "id": self.id,
+            "title" : self.title,
+            "episode_id" : self.episode_id,
+            "opening_crawl" : self.opening_crawl,
+            "director" : self.director,
+            "producer" : self.producer,
+            "release_date" : self.release_date,
+            "url" : self.url,
+            "created" : self.created,
+            "edited" : self.edited
+        }
+    def serialize_simple(self):
         return {
             "id": self.id,
             "name": self.title
@@ -186,8 +209,8 @@ class Starship(db.Model):
     starship_class = db.Column(db.String(120),nullable=False)
     manufacturer = db.Column(db.String(120),nullable=False)
     cost_in_credits = db.Column(db.Integer())
-    length = db.Column(db.Integer())
-    crew = db.Column(db.Integer())
+    length = db.Column(db.Integer()) #float
+    crew = db.Column(db.String(120),nullable=False)
     passengers = db.Column(db.Integer())
     max_atmosphering_speed = db.Column(db.Integer())
     hyperdrive_rating = db.Column(db.String(120),nullable=False)
@@ -208,6 +231,11 @@ class Starship(db.Model):
             "id": self.id,
             "name": self.name
         }
+    def serialize_simple(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
 
 class Vehicle(db.Model):
     __tablename__="vehicle"
@@ -218,7 +246,7 @@ class Vehicle(db.Model):
     manufacturer = db.Column(db.String(120),nullable=False)
     length = db.Column(db.Integer())
     cost_in_credits = db.Column(db.Integer())
-    crew = db.Column(db.Integer())
+    crew = db.Column(db.String(120),nullable=False)
     passengers = db.Column(db.Integer())
     max_atmosphering_speed = db.Column(db.Integer())
     cargo_capacity = db.Column(db.Integer())
@@ -232,6 +260,11 @@ class Vehicle(db.Model):
         return '<Vehicle %r>' % self.name
     
     def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+    def serialize_simple(self):
         return {
             "id": self.id,
             "name": self.name
@@ -261,7 +294,10 @@ class Location(db.Model):
         }
     
     def serialize_movies(self):
-        return self.film.serialize()
+        return self.film.serialize_simple()
+
+    def serialize_planet(self):
+        return self.planet.serialize_simple()
 
 class Resident(db.Model):
     __tablename__="resident"
@@ -289,7 +325,9 @@ class Filmography(db.Model):
         return '<Filmography %r>' % self.film.title
     
     def serialize(self):
-        return self.film.serialize()
+        return self.film.serialize_simple()
+    def serialize_character(self):
+        return self.people.serialize_simple()
 
 class Reg_starship(db.Model):
     __tablename__="reg_starship"
@@ -303,7 +341,7 @@ class Reg_starship(db.Model):
         return '<Starship %r>' % self.starship.name
     
     def serialize(self):
-        return self.starship.serialize()
+        return self.starship.serialize_simple()
 
 class Reg_vehicles(db.Model):
     __tablename__="reg_vehicle"
@@ -317,7 +355,7 @@ class Reg_vehicles(db.Model):
         return '<Vehicle %r>' % self.vehicle.name
     
     def serialize(self):
-        return self.vehicle.serialize()
+        return self.vehicle.serialize_simple()
 
 class Members_specie(db.Model):
     __tablename__="members_specie"
@@ -345,7 +383,9 @@ class Specie_filmography(db.Model):
         return '<Film %r>' % self.film.title
     
     def serialize(self):
-        return self.film.serialize()
+        return self.film.serialize_simple()
+    def serialize_specie(self):
+        return self.specie.serialize_simple()
 
 class Featuring_starship(db.Model):
     __tablename__="featuring_starship"
@@ -358,5 +398,19 @@ class Featuring_starship(db.Model):
     def __repr__(self):
         return '<Film %r>' % self.film.title
     
-    def serialize(self):
-        return self.starship.serialize()
+    def serialize_starship(self):
+        return self.starship.serialize_simple()
+
+class Featuring_vehicle(db.Model):
+    __tablename__="featuring_vehicle"
+    id = db.Column(db.Integer, primary_key=True)
+    vehicle_id = db.Column(db.Integer(),db.ForeignKey("vehicle.id"))
+    vehicle = db.relationship(Vehicle)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
+    film = db.relationship(Film,backref="featuring_vehicle",lazy=True)
+
+    def __repr__(self):
+        return '<Film %r>' % self.film.title
+    
+    def serialize_vehicle(self):
+        return self.vehicle.serialize_simple()
