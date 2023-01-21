@@ -36,8 +36,8 @@ class Planet(db.Model):
     url = db.Column(db.String(120),nullable=False)
     created = db.Column(db.DateTime(),nullable=False)
     edited = db.Column(db.DateTime(),nullable=False)
-    created_by_id=db.Column(db.Integer,db.ForeignKey("user.id"))
-    created_by=db.relationship(User)
+    created_by_id=db.Column(db.Integer,db.ForeignKey("user.id",ondelete="cascade"))
+    created_by=db.relationship(User, cascade="all, delete", passive_deletes=True)
     
 
     def __repr__(self):
@@ -76,8 +76,8 @@ class Specie(db.Model):
     hair_colors = db.Column(db.String(120),nullable=False)
     skin_colors = db.Column(db.String(120),nullable=False)
     language = db.Column(db.String(120),nullable=False)
-    homeworld_by_id = db.Column(db.Integer(),db.ForeignKey("planet.id"))
-    homeworld = db.relationship(Planet)
+    homeworld_by_id = db.Column(db.Integer(),db.ForeignKey("planet.id",ondelete="cascade"))
+    homeworld = db.relationship(Planet,cascade="all, delete", passive_deletes=True)
     # people array = done by table "Members_specie"
     # films array = done by table "specie_filmography"
     url = db.Column(db.String(120),nullable=False)
@@ -121,11 +121,11 @@ class People(db.Model):
     height = db.Column(db.Integer())
     mass = db.Column(db.Integer())
     skin_color = db.Column(db.String(120),nullable=False)
-    homeworld_by_id = db.Column(db.Integer, db.ForeignKey("planet.id"))
-    homeworld = db.relationship(Planet)
+    homeworld_by_id = db.Column(db.Integer, db.ForeignKey("planet.id",ondelete="cascade"))
+    homeworld = db.relationship(Planet,cascade="all, delete", passive_deletes=True)
     # films - done by Table "Filmography"
-    specie_id = db.Column(db.Integer,db.ForeignKey("specie.id"))
-    specie = db.relationship(Specie)
+    specie_id = db.Column(db.Integer,db.ForeignKey("specie.id",ondelete="cascade"))
+    specie = db.relationship(Specie, cascade="all, delete", passive_deletes=True)
     # starships - done by table "Reg_starship"
     # vehicles - done by table "Reg_vehicle"
     url = db.Column(db.String(120),nullable=False)
@@ -298,10 +298,10 @@ class Vehicle(db.Model):
 class Location(db.Model):
     __tablename__="location"
     id = db.Column(db.Integer, primary_key=True)
-    planet_id = db.Column(db.Integer(),db.ForeignKey("planet.id"))
-    planet = db.relationship(Planet)
-    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
-    film = db.relationship(Film,backref="film",lazy=True)
+    planet_id = db.Column(db.Integer(),db.ForeignKey("planet.id",ondelete="cascade"))
+    planet = db.relationship(Planet, cascade="all, delete", passive_deletes=True)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id",ondelete="cascade"))
+    film = db.relationship(Film,backref="film",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Film %r>' % self.film.title
@@ -327,10 +327,10 @@ class Location(db.Model):
 class Resident(db.Model):
     __tablename__="resident"
     id = db.Column(db.Integer, primary_key=True)
-    planet_id = db.Column(db.Integer(),db.ForeignKey("planet.id"))
-    planet = db.relationship(Planet)
-    people_id = db.Column(db.Integer(),db.ForeignKey("people.id"))
-    people = db.relationship(People,backref="resident",lazy=True)
+    planet_id = db.Column(db.Integer(),db.ForeignKey("planet.id",ondelete="cascade"))
+    planet = db.relationship(Planet, cascade="all, delete", passive_deletes=True)
+    people_id = db.Column(db.Integer(),db.ForeignKey("people.id",ondelete="cascade"))
+    people = db.relationship(People,backref="resident",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Resident %r>' % self.people.name
@@ -342,9 +342,9 @@ class Filmography(db.Model):
     __tablename__="filmography"
     id = db.Column(db.Integer, primary_key=True)
     film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
-    film = db.relationship(Film)
-    people_id = db.Column(db.Integer(),db.ForeignKey("people.id"))
-    people = db.relationship(People,backref="filmography",lazy=True)
+    film = db.relationship(Film, cascade="all, delete", passive_deletes=True)
+    people_id = db.Column(db.Integer(),db.ForeignKey("people.id",ondelete="cascade"))
+    people = db.relationship(People,backref="filmography",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Filmography %r>' % self.film.title
@@ -357,10 +357,10 @@ class Filmography(db.Model):
 class Reg_starship(db.Model):
     __tablename__="reg_starship"
     id = db.Column(db.Integer, primary_key=True)
-    starship_id = db.Column(db.Integer(),db.ForeignKey("starship.id"))
-    starship = db.relationship(Starship)
-    people_id = db.Column(db.Integer(),db.ForeignKey("people.id"))
-    people = db.relationship(People,backref="reg_starship",lazy=True)
+    starship_id = db.Column(db.Integer(),db.ForeignKey("starship.id",ondelete="cascade"))
+    starship = db.relationship(Starship, cascade="all, delete", passive_deletes=True)
+    people_id = db.Column(db.Integer(),db.ForeignKey("people.id",ondelete="cascade"))
+    people = db.relationship(People,backref="reg_starship",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Starship %r>' % self.starship.name
@@ -373,10 +373,10 @@ class Reg_starship(db.Model):
 class Reg_vehicles(db.Model):
     __tablename__="reg_vehicle"
     id = db.Column(db.Integer, primary_key=True)
-    vehicle_id = db.Column(db.Integer(),db.ForeignKey("vehicle.id"))
-    vehicle = db.relationship(Vehicle)
-    people_id = db.Column(db.Integer(),db.ForeignKey("people.id"))
-    people = db.relationship(People,backref="reg_vehicle",lazy=True)
+    vehicle_id = db.Column(db.Integer(),db.ForeignKey("vehicle.id",ondelete="cascade"))
+    vehicle = db.relationship(Vehicle, cascade="all, delete", passive_deletes=True)
+    people_id = db.Column(db.Integer(),db.ForeignKey("people.id",ondelete="cascade"))
+    people = db.relationship(People,backref="reg_vehicle",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Vehicle %r>' % self.vehicle.name
@@ -389,10 +389,10 @@ class Reg_vehicles(db.Model):
 class Members_specie(db.Model):
     __tablename__="members_specie"
     id = db.Column(db.Integer, primary_key=True)
-    specie_id = db.Column(db.Integer(),db.ForeignKey("specie.id"))
-    specie = db.relationship(Specie)
-    people_id = db.Column(db.Integer(),db.ForeignKey("people.id"))
-    people = db.relationship(People,backref="members_specie",lazy=True)
+    specie_id = db.Column(db.Integer(),db.ForeignKey("specie.id",ondelete="cascade"))
+    specie = db.relationship(Specie, cascade="all, delete", passive_deletes=True)
+    people_id = db.Column(db.Integer(),db.ForeignKey("people.id",ondelete="cascade"))
+    people = db.relationship(People,backref="members_specie",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Specie %r>' % self.specie.name
@@ -403,10 +403,10 @@ class Members_specie(db.Model):
 class Specie_filmography(db.Model):
     __tablename__="specie_filmography"
     id = db.Column(db.Integer, primary_key=True)
-    specie_id = db.Column(db.Integer(),db.ForeignKey("specie.id"))
-    specie = db.relationship(Specie)
-    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
-    film = db.relationship(Film,backref="specie_filmography",lazy=True)
+    specie_id = db.Column(db.Integer(),db.ForeignKey("specie.id",ondelete="cascade"))
+    specie = db.relationship(Specie, cascade="all, delete", passive_deletes=True)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id",ondelete="cascade"))
+    film = db.relationship(Film,backref="specie_filmography",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Film %r>' % self.film.title
@@ -419,10 +419,10 @@ class Specie_filmography(db.Model):
 class Featuring_starship(db.Model):
     __tablename__="featuring_starship"
     id = db.Column(db.Integer, primary_key=True)
-    starship_id = db.Column(db.Integer(),db.ForeignKey("starship.id"))
-    starship = db.relationship(Starship)
-    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
-    film = db.relationship(Film,backref="featuring_starship",lazy=True)
+    starship_id = db.Column(db.Integer(),db.ForeignKey("starship.id",ondelete="cascade"))
+    starship = db.relationship(Starship, cascade="all, delete", passive_deletes=True)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id",ondelete="cascade"))
+    film = db.relationship(Film,backref="featuring_starship",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Film %r>' % self.film.title
@@ -435,10 +435,10 @@ class Featuring_starship(db.Model):
 class Featuring_vehicle(db.Model):
     __tablename__="featuring_vehicle"
     id = db.Column(db.Integer, primary_key=True)
-    vehicle_id = db.Column(db.Integer(),db.ForeignKey("vehicle.id"))
-    vehicle = db.relationship(Vehicle)
-    film_id = db.Column(db.Integer(),db.ForeignKey("film.id"))
-    film = db.relationship(Film,backref="featuring_vehicle",lazy=True)
+    vehicle_id = db.Column(db.Integer(),db.ForeignKey("vehicle.id",ondelete="cascade"))
+    vehicle = db.relationship(Vehicle, cascade="all, delete", passive_deletes=True)
+    film_id = db.Column(db.Integer(),db.ForeignKey("film.id",ondelete="cascade"))
+    film = db.relationship(Film,backref="featuring_vehicle",lazy=True, cascade="all, delete", passive_deletes=True)
 
     def __repr__(self):
         return '<Film %r>' % self.film.title
